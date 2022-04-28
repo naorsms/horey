@@ -22,7 +22,7 @@ class SystemFunctionFactory:
     class SystemFunction:
         HOREY_REPO_PATH = None
 
-        def __init__(self, root_deployment_dir, provisioner_script_name, force=False, trigger_on_any_provisioned=None):
+        def __init__(self, root_deployment_dir, provisioner_script_name, force=False):
             """
 
             @param root_deployment_dir:
@@ -37,16 +37,31 @@ class SystemFunctionFactory:
             self.deployment_dir = os.path.join(root_deployment_dir, *self.submodules.split("."))
             self.pip_api = PipAPI(venv_dir_path=os.path.join(root_deployment_dir, "_venv"), horey_repo_path=self.HOREY_REPO_PATH)
             self.force = force
-            self.trigger_on_any_provisioned = trigger_on_any_provisioned
+
+        def provision(self):
+            self.install_system_function_requirements()
+            if not self.force:
+                if self._test_provisioned():
+                    return False
+
+            self._provision()
+            return True
+
+        def _test_provisioned(self):
+            raise NotImplementedError()
+
+        def _provision(self):
+            raise NotImplementedError()
 
         def add_system_function(self, force=False, trigger_on_any_provisioned=None):
             self.install_system_function_requirements()
-            self.add_system_function_to_provisioner_script(force=force, trigger_on_any_provisioned=trigger_on_any_provisioned)
+            #self.add_system_function_to_provisioner_script(force=force, trigger_on_any_provisioned=trigger_on_any_provisioned)
 
         def move_system_function_to_deployment_dir(self):
             shutil.copytree(os.path.dirname(sys.modules[self.__module__].__file__), self.deployment_dir, dirs_exist_ok=True)
 
         def install_system_function_requirements(self):
+            pdb.set_trace()
             requirements_path = os.path.join(self.deployment_dir, "requirements.txt")
             self.pip_api.install_requirements(requirements_path)
 

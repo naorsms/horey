@@ -28,7 +28,7 @@ for VARIABLE in {1..10}
 do
   unlock_frontend_file
 	echo "$@"
-  "$@"
+  sudo "$@"
   return_code=$?
   if [ "$return_code" == 0 ]
   then

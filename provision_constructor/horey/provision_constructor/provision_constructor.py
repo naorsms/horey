@@ -41,7 +41,10 @@ class ProvisionConstructor:
         SystemFunctionFactory.REGISTERED_FUNCTIONS[system_function_name](self.deployment_dir,
                                                                     ProvisionConstructor.PROVISIONER_SCRIPT_NAME,
                                                                     **kwargs)
+
+        provisioned = SystemFunctionFactory.REGISTERED_FUNCTIONS[system_function_name].provision()
         self.provisioned_system_functions.append(system_function_name)
+        return provisioned
 
     def check_provisioned_ancestor(self, system_function_name):
         if "." in system_function_name:
@@ -49,14 +52,10 @@ class ProvisionConstructor:
             if ancestor_name not in self.provisioned_system_functions:
                 raise RuntimeError(f"'{system_function_name}' ancestor '{ancestor_name}' was not found")
 
-    def generate_provision_constructor_bootstrap_script(self, remote_deployment_dir_path, script_path):
+    def generate_provision_constructor_bootstrap_script(self, deployment_dir, script_name):
         pdb.set_trace()
-        # cp -r  _venv_tmp/lib/python3.8/site-packages/* _venv/lib/python3.8/site-packages/
-        # install python3.8
-        # install git
-        # install pip3.8
-        # install make
-        # make install
-        # apt-get install python3-venv -y
-
-        #download_horey
+        shutil.copyfile(
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "bash_tools", "provision_constructor_bootstrap.sh"),
+           os.path.join(deployment_dir, script_name))
+        shutil.copyfile(
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "bash_tools", "retry.sh"), os.path.join(deployment_dir, "retry.sh"))
