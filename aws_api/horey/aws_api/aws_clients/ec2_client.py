@@ -173,7 +173,13 @@ class EC2Client(Boto3Client):
         for instance in self.execute(self.client.describe_instances, "Reservations", filters_req=filters_req):
             final_result.extend(instance['Instances'])
 
-        return [EC2Instance(instance) for instance in final_result]
+        ret = []
+        for instance_dict in final_result:
+            instance = EC2Instance(instance_dict)
+            instance.region = region
+            ret.append(instance)
+
+        return ret
 
     def get_all_volumes(self, region=None):
         """

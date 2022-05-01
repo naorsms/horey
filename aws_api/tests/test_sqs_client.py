@@ -1,4 +1,6 @@
+import json
 import os
+import pdb
 
 from horey.aws_api.aws_clients.sqs_client import SQSClient
 from horey.aws_api.aws_services_entities.sqs_queue import SQSQueue
@@ -40,7 +42,18 @@ def test_provision_queue():
     assert sqs_queue.queue_url is not None
 
 
+def test_send_message():
+    client = SQSClient()
+    sqs_queue = SQSQueue({})
+    sqs_queue.region = AWSAccount.get_aws_region()
+    sqs_queue.name = "sqs_queue_horey_test"
+    client.update_queue_information(sqs_queue)
+    pdb.set_trace()
+    client.send_message(sqs_queue, json.dumps({1: 1}))
+
+
 if __name__ == "__main__":
-    test_init_client()
-    test_provision_queue()
+    #test_init_client()
+    #test_provision_queue()
+    test_send_message()
 

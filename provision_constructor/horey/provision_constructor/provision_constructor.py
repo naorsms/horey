@@ -17,6 +17,7 @@ class ProvisionConstructor:
         SystemFunctionFactory.SystemFunction.HOREY_REPO_PATH = self.horey_repo_path
 
         self.deployment_dir = os.path.join(base_dir_path, ProvisionConstructor.PROVISIONER_CONSTRUCTOR_SUB_DIR)
+        return
         if os.path.exists(self.deployment_dir):
             shutil.rmtree(self.deployment_dir)
 
@@ -39,8 +40,8 @@ class ProvisionConstructor:
     def add_system_function(self, system_function_name, **kwargs):
         self.check_provisioned_ancestor(system_function_name)
         SystemFunctionFactory.REGISTERED_FUNCTIONS[system_function_name](self.deployment_dir,
-                                                                    ProvisionConstructor.PROVISIONER_SCRIPT_NAME,
-                                                                    **kwargs)
+                                                                         ProvisionConstructor.PROVISIONER_SCRIPT_NAME,
+                                                                         **kwargs)
 
         provisioned = SystemFunctionFactory.REGISTERED_FUNCTIONS[system_function_name].provision()
         self.provisioned_system_functions.append(system_function_name)
@@ -53,9 +54,10 @@ class ProvisionConstructor:
                 raise RuntimeError(f"'{system_function_name}' ancestor '{ancestor_name}' was not found")
 
     def generate_provision_constructor_bootstrap_script(self, deployment_dir, script_name):
-        pdb.set_trace()
         shutil.copyfile(
-        os.path.join(os.path.dirname(os.path.abspath(__file__)), "bash_tools", "provision_constructor_bootstrap.sh"),
-           os.path.join(deployment_dir, script_name))
+            os.path.join(os.path.dirname(os.path.abspath(__file__)), "bash_tools",
+                         "provision_constructor_bootstrap.sh"),
+            os.path.join(deployment_dir, script_name))
         shutil.copyfile(
-        os.path.join(os.path.dirname(os.path.abspath(__file__)), "bash_tools", "retry.sh"), os.path.join(deployment_dir, "retry.sh"))
+            os.path.join(os.path.dirname(os.path.abspath(__file__)), "bash_tools", "retry.sh"),
+            os.path.join(deployment_dir, "retry.sh"))

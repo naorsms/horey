@@ -26,6 +26,7 @@ sudo apt install make -y
 cd /opt
 
 #horey
+sudo rm -rf horey
 sudo git clone https://github.com/AlexeyBeley/horey.git
 sudo chown -R  ubuntu:ubuntu horey/
 cd horey

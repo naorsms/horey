@@ -79,3 +79,12 @@ class SQSClient(Boto3Client):
         for response in self.execute(self.client.create_queue, "QueueUrl",
                                      filters_req=request_dict):
             return response
+
+    def send_message(self, queue, message):
+        pdb.set_trace()
+        AWSAccount.set_aws_region(queue.region)
+        logger.info(f"Sending message to queue: {queue.queue_url}")
+        request_dict = {"MessageBody": message, "QueueUrl": queue.queue_url}
+        for response in self.execute(self.client.send_message, "QueueUrl",
+                                     filters_req=request_dict):
+            return response
