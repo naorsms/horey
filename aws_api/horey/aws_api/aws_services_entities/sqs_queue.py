@@ -30,8 +30,7 @@ class SQSQueue(AwsObject):
         self.content_based_deduplication = None
         self.deduplication_scope = None
         self.fifo_throughput_limit = None
-        self.deduplication_scope = None
-        self.fifo_throughput_limit = None
+        self.queue_url = None
 
         if from_cache:
             self._init_object_from_cache(dict_src)

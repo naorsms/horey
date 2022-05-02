@@ -35,11 +35,11 @@ class SQSClient(Boto3Client):
 
         return final_result
 
-    def get_region_queues(self, region, full_information=True):
+    def get_region_queues(self, region, full_information=True, filters_req=None):
         final_result = list()
         AWSAccount.set_aws_region(region)
 
-        raw_data = list(self.execute(self.client.list_queues, None, raw_data=True))[0]
+        raw_data = list(self.execute(self.client.list_queues, None, raw_data=True, filters_req=filters_req))[0]
         urls = raw_data.get("QueueUrls") or []
 
         for url in urls:
@@ -51,7 +51,7 @@ class SQSClient(Boto3Client):
 
         return final_result
 
-    def update_queue_information(self, sqs_queue):
+    def update_queue_information(self, sqs_queue: SQSQueue):
         filters_req = {"QueueUrl": sqs_queue.queue_url, "AttributeNames": ['All']}
         for dict_attributes in self.execute(self.client.get_queue_attributes, "Attributes", filters_req=filters_req):
             sqs_queue.update_attributes_from_raw_response(dict_attributes)
@@ -81,10 +81,9 @@ class SQSClient(Boto3Client):
             return response
 
     def send_message(self, queue, message):
-        pdb.set_trace()
         AWSAccount.set_aws_region(queue.region)
         logger.info(f"Sending message to queue: {queue.queue_url}")
         request_dict = {"MessageBody": message, "QueueUrl": queue.queue_url}
-        for response in self.execute(self.client.send_message, "QueueUrl",
+        for response in self.execute(self.client.send_message, None, raw_data=True,
                                      filters_req=request_dict):
             return response

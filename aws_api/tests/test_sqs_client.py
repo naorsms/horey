@@ -44,12 +44,13 @@ def test_provision_queue():
 
 def test_send_message():
     client = SQSClient()
-    sqs_queue = SQSQueue({})
-    sqs_queue.region = AWSAccount.get_aws_region()
-    sqs_queue.name = "sqs_queue_horey_test"
-    client.update_queue_information(sqs_queue)
-    pdb.set_trace()
-    client.send_message(sqs_queue, json.dumps({1: 1}))
+    region = AWSAccount.get_aws_region()
+
+    sqs_queue = client.get_region_queues(region, filters_req={"QueueNamePrefix": "sqs_queue_horey_test"})
+    if len(sqs_queue) != 1:
+        raise AttributeError()
+    response = client.send_message(sqs_queue[0], json.dumps({1: 1}))
+    assert isinstance(response, dict)
 
 
 if __name__ == "__main__":
